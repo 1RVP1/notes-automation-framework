@@ -1,0 +1,25 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Logs
+*.log
+logs/
+
+# Allure
+allure-results/
+allure-report/
+
+# Screenshots & videos
+test-output/
+
+# JMeter Results
+performance/results/dashboard/
+performance/results/results.jtl
+
+# OS files
+.DS_Store
+Thumbs.db

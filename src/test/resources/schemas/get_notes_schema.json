@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GET /notes Response Schema",
+  "type": "object",
+  "required": ["success", "status", "message", "data"],
+  "properties": {
+    "success": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "integer"
+    },
+    "message": {
+      "type": "string"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "description", "category", "completed", "user_id"],
+        "properties": {
+          "id":          { "type": "string" },
+          "title":       { "type": "string" },
+          "description": { "type": "string" },
+          "category":    { "type": "string", "enum": ["Home", "Work", "Personal"] },
+          "completed":   { "type": "boolean" },
+          "user_id":     { "type": "string" }
+        }
+      }
+    }
+  }
+}

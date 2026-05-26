@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+
+    <hashTree>
+
+        <!-- ═══════════════════════════════════════════
+             TEST PLAN
+        ═══════════════════════════════════════════ -->
+        <TestPlan
+            guiclass="TestPlanGui"
+            testclass="TestPlan"
+            testname="Notes Performance Test"
+            enabled="true">
+
+            <boolProp name="TestPlan.functional_mode">false</boolProp>
+            <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+
+            <elementProp
+                name="TestPlan.user_defined_variables"
+                elementType="Arguments"
+                guiclass="ArgumentsPanel"
+                testclass="Arguments"
+                enabled="true">
+                <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+
+        </TestPlan>
+
+        <hashTree>
+
+            <!-- ═══════════════════════════════════════════
+                 THREAD GROUP
+                 Threads : 5
+                 Ramp-up : 5s
+                 Loops   : 2
+            ═══════════════════════════════════════════ -->
+            <ThreadGroup
+                guiclass="ThreadGroupGui"
+                testclass="ThreadGroup"
+                testname="Thread Group"
+                enabled="true">
+
+                <stringProp name="ThreadGroup.num_threads">5</stringProp>
+                <stringProp name="ThreadGroup.ramp_time">5</stringProp>
+
+                <elementProp
+                    name="ThreadGroup.main_controller"
+                    elementType="LoopController"
+                    guiclass="LoopControlPanel"
+                    testclass="LoopController"
+                    enabled="true">
+                    <boolProp name="LoopController.continue_forever">false</boolProp>
+                    <stringProp name="LoopController.loops">2</stringProp>
+                </elementProp>
+
+            </ThreadGroup>
+
+            <hashTree>
+
+                <!-- ───────────────────────────────────────
+                     STEP 1: LOGIN API (POST)
+                ─────────────────────────────────────── -->
+                <HTTPSamplerProxy
+                    guiclass="HttpTestSampleGui"
+                    testclass="HTTPSamplerProxy"
+                    testname="Login API"
+                    enabled="true">
+
+                    <stringProp name="HTTPSampler.domain">practice.expandtesting.com</stringProp>
+                    <stringProp name="HTTPSampler.protocol">https</stringProp>
+                    <stringProp name="HTTPSampler.path">/notes/api/users/login</stringProp>
+                    <stringProp name="HTTPSampler.method">POST</stringProp>
+                    <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+
+                    <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                        <collectionProp name="Arguments.arguments">
+                            <elementProp name="" elementType="HTTPArgument">
+                                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                                <stringProp name="Argument.value">{"email":"pawarrutu12345@gmail.com","password":"Rutu@123"}</stringProp>
+                                <stringProp name="Argument.metadata">=</stringProp>
+                            </elementProp>
+                        </collectionProp>
+                    </elementProp>
+
+                </HTTPSamplerProxy>
+
+                <hashTree>
+
+                    <!-- Header: Content-Type for Login -->
+                    <HeaderManager
+                        guiclass="HeaderPanel"
+                        testclass="HeaderManager"
+                        testname="Login Header Manager"
+                        enabled="true">
+                        <collectionProp name="HeaderManager.headers">
+                            <elementProp name="" elementType="Header">
+                                <stringProp name="Header.name">Content-Type</stringProp>
+                                <stringProp name="Header.value">application/json</stringProp>
+                            </elementProp>
+                        </collectionProp>
+                    </HeaderManager>
+
+                    <hashTree/>
+
+                    <!-- Extract Bearer Token from Login Response -->
+                    <JSONPostProcessor
+                        guiclass="JSONPostProcessorGui"
+                        testclass="JSONPostProcessor"
+                        testname="Extract Token"
+                        enabled="true">
+                        <stringProp name="JSONPostProcessor.referenceNames">token</stringProp>
+                        <stringProp name="JSONPostProcessor.jsonPathExprs">$.data.token</stringProp>
+                        <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+                    </JSONPostProcessor>
+
+                    <hashTree/>
+
+                </hashTree>
+
+                <!-- ───────────────────────────────────────
+                     STEP 2: GET NOTES API (GET)
+                ─────────────────────────────────────── -->
+                <HTTPSamplerProxy
+                    guiclass="HttpTestSampleGui"
+                    testclass="HTTPSamplerProxy"
+                    testname="Get Notes API"
+                    enabled="true">
+
+                    <stringProp name="HTTPSampler.domain">practice.expandtesting.com</stringProp>
+                    <stringProp name="HTTPSampler.protocol">https</stringProp>
+                    <stringProp name="HTTPSampler.path">/notes/api/notes</stringProp>
+                    <stringProp name="HTTPSampler.method">GET</stringProp>
+
+                </HTTPSamplerProxy>
+
+                <hashTree>
+
+                    <!-- Headers: Authorization + Content-Type for Get Notes -->
+                    <HeaderManager
+                        guiclass="HeaderPanel"
+                        testclass="HeaderManager"
+                        testname="Auth Header Manager"
+                        enabled="true">
+                        <collectionProp name="HeaderManager.headers">
+                            <elementProp name="" elementType="Header">
+                                <stringProp name="Header.name">x-auth-token</stringProp>
+                                <stringProp name="Header.value">${token}</stringProp>
+                            </elementProp>
+                            <elementProp name="" elementType="Header">
+                                <stringProp name="Header.name">Content-Type</stringProp>
+                                <stringProp name="Header.value">application/json</stringProp>
+                            </elementProp>
+                        </collectionProp>
+                    </HeaderManager>
+
+                    <hashTree/>
+
+                    <!-- Assertion: Response must be under 2000ms -->
+                    <DurationAssertion
+                        guiclass="DurationAssertionGui"
+                        testclass="DurationAssertion"
+                        testname="Under 2 Seconds"
+                        enabled="true">
+                        <stringProp name="DurationAssertion.duration">2000</stringProp>
+                    </DurationAssertion>
+
+                    <hashTree/>
+
+                </hashTree>
+
+            </hashTree>
+
+        </hashTree>
+
+    </hashTree>
+
+</jmeterTestPlan>

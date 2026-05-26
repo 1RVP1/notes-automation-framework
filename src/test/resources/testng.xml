@@ -1,0 +1,57 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="Notes Application Test Suite"
+       parallel="classes"
+       thread-count="3"
+       verbose="1">
+
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+        <listener class-name="com.notes.utils.RetryListener"/>
+    </listeners>
+
+    <!-- UI Tests -->
+    <test name="UI Tests">
+        <classes>
+            <class name="com.notes.ui.LoginTest"/>
+            <class name="com.notes.ui.NoteTest"/>
+            <class name="com.notes.ui.LogoutTest"/>
+        </classes>
+    </test>
+
+    <!-- API Tests -->
+    <test name="API Tests">
+        <classes>
+            <class name="com.notes.api.NotesApiTest"/>
+        </classes>
+    </test>
+
+    <!-- Hybrid Tests -->
+    <test name="Hybrid Tests">
+        <classes>
+            <class name="com.notes.hybrid.HybridValidationTest"/>
+        </classes>
+    </test>
+
+    <!-- Agentic Tests -->
+    <test name="Agentic Tests">
+        <classes>
+            <class name="com.notes.agentic.AgenticTest"/>
+        </classes>
+    </test>
+
+    <!-- MCP Tests -->
+    <test name="MCP Tests">
+        <classes>
+            <class name="com.notes.mcp.McpTest"/>
+        </classes>
+    </test>
+
+    <!-- Performance Tests -->
+    <test name="Performance Tests">
+        <classes>
+            <class name="com.notes.performance.PerformanceTest"/>
+        </classes>
+    </test>
+
+</suite>
