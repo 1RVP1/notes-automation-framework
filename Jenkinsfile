@@ -15,6 +15,13 @@ pipeline {
             }
         }
 
+        stage('Clean Performance Results') {
+            steps {
+                bat 'if exist performance\\results\\dashboard rmdir /s /q performance\\results\\dashboard'
+                bat 'if exist performance\\results\\results.jtl del /f performance\\results\\results.jtl'
+            }
+        }
+
         stage('Run Automation Tests') {
             steps {
                 bat 'mvn test'
