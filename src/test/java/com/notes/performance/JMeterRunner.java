@@ -15,9 +15,7 @@ public class JMeterRunner {
             LogManager.getLogger(JMeterRunner.class);
 
     public static void runPerformanceTest() {
-
         try {
-
             String command =
                     "jmeter -n " +
                             "-t performance/NotesApiPerformance.jmx " +
@@ -41,9 +39,7 @@ public class JMeterRunner {
             );
 
             String line;
-
             while ((line = reader.readLine()) != null) {
-
                 log.info("[JMeter] " + line);
             }
 
@@ -58,11 +54,15 @@ public class JMeterRunner {
                         new File("performance/results/results.jtl");
 
                 if (resultsFile.exists()) {
-
                     Allure.addAttachment(
-                            "JMeter Results",
-                            new FileInputStream(resultsFile)
+                            "JMeter Raw Results (JTL)",
+                            "text/csv",
+                            new FileInputStream(resultsFile),
+                            "csv"
                     );
+                    log.info("JMeter JTL results attached to Allure.");
+                } else {
+                    log.warn("results.jtl not found — skipping attachment.");
                 }
 
                 // Attach HTML Dashboard
@@ -70,15 +70,18 @@ public class JMeterRunner {
                         new File("performance/results/dashboard/index.html");
 
                 if (dashboard.exists()) {
-
                     Allure.addAttachment(
-                            "JMeter Dashboard",
-                            new FileInputStream(dashboard)
+                            "JMeter Dashboard Report",
+                            "text/html",
+                            new FileInputStream(dashboard),
+                            "html"
                     );
+                    log.info("JMeter Dashboard HTML attached to Allure.");
+                } else {
+                    log.warn("JMeter dashboard index.html not found — skipping attachment.");
                 }
 
             } else {
-
                 log.error(
                         "JMeter execution failed with exit code: "
                                 + exitCode
@@ -86,7 +89,6 @@ public class JMeterRunner {
             }
 
         } catch (Exception e) {
-
             log.error(
                     "Failed to execute JMeter test: "
                             + e.getMessage()
